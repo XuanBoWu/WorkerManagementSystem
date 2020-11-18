@@ -20,6 +20,7 @@ int main() {
         switch (choose) {
             case 0://退出系统
                 mg.exitSystem();
+                exit(0);
                 break;
             case 1://添加职工
                 mg.add_Emp();
@@ -31,12 +32,16 @@ int main() {
                 mg.del_Emp();
                 break;
             case 4://修改职工
+                mg.mod_Emp();
                 break;
             case 5://查找职工
+                mg.find_Emp();
                 break;
             case 6://排序职工
+                mg.sort_Emp();
                 break;
             case 7://清空文件
+                mg.clean_File();
                 break;
             default:
                 system("cls");

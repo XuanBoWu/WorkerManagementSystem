@@ -23,7 +23,7 @@ void Management::ShowMenu(){
 void Management::exitSystem(){
     cout << "欢迎下次使用。" << endl;
     system("pause");
-    exit(0);
+//    exit(0);
 }
 
 //添加员工信息
@@ -170,6 +170,8 @@ void Management::init_Emp() {
 void Management::show_Emp(){
     if(this->m_FileIsEmpty){
         cout << "记录为空！" << endl;
+        system("pause");
+        system("cls");
         return ;
     } else {
         for(int i = 0 ; i < this->m_EmpNum ; i++){
@@ -181,7 +183,7 @@ void Management::show_Emp(){
 }
 
 
-//职工是否存在函数
+//职工编号是否存在函数
 int Management::IsExist(int id){
     int index = -1;
     if(this->m_FileIsEmpty){
@@ -198,10 +200,31 @@ int Management::IsExist(int id){
     return index;
 }
 
+//职工姓名是否存在函数
+int Management::IsExist(string name){
+    int index = -1;
+//    Worker * result = NULL;
+    if(this->m_FileIsEmpty){
+        cout << "记录为空！" << endl;
+        return index;
+    }
+
+    for(int i = 0 ; i < this->m_EmpNum ; i++){
+        if(this->m_EmpArray[i]->m_Name == name){
+            index = i;
+            break;
+        }
+    }
+    return index;
+}
+
+
 //删除职工
 void Management::del_Emp(){
     if(this->m_FileIsEmpty){
         cout << "记录为空！" << endl;
+        system("pause");
+        system("cls");
         return ;
     }
     int del_Id;
@@ -224,8 +247,205 @@ void Management::del_Emp(){
     system("cls");
 }
 
+//修改职工信息
+void Management::mod_Emp(){
+    if(this->m_FileIsEmpty){
+        cout << "记录为空！" << endl;
+        system("pause");
+        system("cls");
+        return ;
+    }
+    int id;
+    cout << "请输入要更改的职工编号:";
+    cin >> id;
+    int index = this->IsExist(id);
+
+    if(index != -1){
+        delete this->m_EmpArray[index];
+        int id;
+        string name;
+        int dSelect;
+
+        cout << "输入职工的编号：";
+        cin >> id;
+
+        cout << "输入职工的姓名：";
+        cin >> name;
 
 
+        cout << "1 - 普通职工" << endl;
+        cout << "2 - 经理" << endl;
+        cout << "3 - 老板" << endl;
+        cout << "请选择职工的职位：" ;
+        do{
+            cin >> dSelect;
+            if(dSelect > 3 || dSelect < 1)
+                cout << "输入有误请重新输入：";
+        } while (dSelect > 3 || dSelect < 1);
+
+
+
+        Worker * worker = NULL;
+
+        switch (dSelect) {
+            case 1 :
+                worker = new Employees(id, name, dSelect);
+                break;
+            case 2 :
+                worker = new Manager(id, name, dSelect);
+                break;
+            case 3 :
+                worker = new Boss(id, name, dSelect);
+                break;
+            default:
+                cout << "输入有误。" << endl;
+                break;
+        }
+        this->m_EmpArray[index] = worker;
+        this->save();
+        cout << "更改成功。" << endl;
+    } else {
+        cout << "查无此人。" << endl;
+    }
+
+
+
+    system("pause");
+    system("cls");
+}
+
+//查找职工
+void Management::find_Emp(){
+    if(this->m_FileIsEmpty){
+        cout << "记录为空！" << endl;
+        system("pause");
+        system("cls");
+        return ;
+    }
+    cout << "1 - 按编号查找" << endl;
+    cout << "2 - 按姓名查找" << endl;
+    cout << "请选择查找方式：";
+    int select;
+    do{
+        cin >> select;
+
+        if(select == 1){
+            int id;
+            cout << "请输入要查找的职工编号:";
+            cin >> id;
+            int index = this->IsExist(id);
+            if(index != -1){
+                cout << "查找成功：";
+                cout << "职工编号为：" << this->m_EmpArray[index]->m_Id << " 职工信息如下：" << endl;
+                this->m_EmpArray[index]->showWorkerInfo();
+            } else {
+                cout << "查找失败，查无此人" << endl;
+            }
+        } else if(select == 2){
+            string name;
+            cout << "请输入要查找的职工姓名:";
+            cin >> name;
+            int index = this->IsExist(name);
+            if(index != -1){
+                cout << "查找成功：";
+                cout << "职工编号为：" << this->m_EmpArray[index]->m_Id << " 职工信息如下：" << endl;
+                this->m_EmpArray[index]->showWorkerInfo();
+            } else {
+                cout << "查找失败，查无此人" << endl;
+            }
+
+        } else {
+            cout << "输入错误请重新输入：";
+        }
+    } while (! (select == 1 || select == 2));
+
+    system("pause");
+    system("cls");
+}
+
+
+//排序职工
+void Management::sort_Emp(){
+    if(this->m_FileIsEmpty){
+        cout << "记录为空！" << endl;
+        system("pause");
+        system("cls");
+        return ;
+    }
+
+    cout << "1 - 按职工编号升序排列" << endl;
+    cout << "2 - 按职工编号降序排列" << endl;
+    cout << "请选择排序方式：";
+    int select;
+    cin >> select;
+
+    for(int i = 0 ; i < this->m_EmpNum ; i++){
+        int minOrMax = i;
+        for(int j = i + 1 ; j < this->m_EmpNum; j++){
+            if(select==1){
+                if(this->m_EmpArray[minOrMax]->m_Id > this->m_EmpArray[j]->m_Id){
+                    minOrMax = j;
+                }
+            } else if(select==2){
+                if(this->m_EmpArray[minOrMax]->m_Id < this->m_EmpArray[j]->m_Id){
+                    minOrMax = j;
+                }
+            }
+
+        }
+
+        if(i != minOrMax){
+            Worker * temp = this->m_EmpArray[i];
+            this->m_EmpArray[i] = this->m_EmpArray[minOrMax];
+            this->m_EmpArray[minOrMax] = temp;
+        }
+    }
+
+    cout << "排序完成。结果如下：" << endl;
+    this->save();
+    this->show_Emp();
+
+    system("pause");
+    system("cls");
+}
+
+//清空职工信息
+void Management::clean_File(){
+    if(this->m_FileIsEmpty){
+        cout << "记录已经为空！" << endl;
+        system("pause");
+        system("cls");
+        return ;
+    }
+
+    cout << "确认清空？" << endl;
+    cout << "输入（yes or no）:";
+    string select;
+
+    cin >> select;
+    if(select == "yes"){
+        ofstream ofs(FILENAME, ios::trunc);
+        ofs.close();
+
+        if(this->m_EmpArray != NULL){
+            for(int i = 0 ; i < this->m_EmpNum ; i++){
+                if(this->m_EmpArray[i] != NULL){
+                    delete this->m_EmpArray[i];
+                }
+            }
+            this->m_EmpNum = 0;
+            delete [] this->m_EmpArray;
+            this->m_EmpArray = NULL;
+            this->m_FileIsEmpty = true;
+        }
+        cout << "职工信息清除完成。" << endl;
+    } else{
+        cout << "取消职工信息清除，返回系统。" << endl;
+    }
+
+    system("pause");
+    system("cls");
+}
 
 //构造函数的实现
 Management::Management() {

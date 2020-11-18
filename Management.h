@@ -44,10 +44,20 @@ public:
     void init_Emp();
     //显示职工
     void show_Emp();
-    //职工是否存在函数
+    //职工编号是否存在函数
     int IsExist(int id);
+    //职工姓名是否存在函数
+    int IsExist(string name);
     //删除职工
     void del_Emp();
+    //修改职工信息
+    void mod_Emp();
+    //查找职工
+    void find_Emp();
+    //排序职工
+    void sort_Emp();
+    //清空职工信息
+    void clean_File();
     //析构函数
     ~Management();
 
