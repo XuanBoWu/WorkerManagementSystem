@@ -7,6 +7,7 @@
 #include <iostream>
 using namespace std;
 class Worker {
+    friend class Management;
 public:
 
     virtual void showWorkerInfo() = 0;
@@ -14,6 +15,7 @@ public:
     virtual ~Worker(){
 
     }
+
 protected:
     int m_Id;
     string m_Name;
